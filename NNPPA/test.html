@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings - Nigerian Navy</title>
+    <style>
+        /* CSS Variables for easy theme management */
+        :root {
+            --navy-blue: #101C46;
+            --light-gray-bg: #f0f2f5;
+            --border-gray: #e0e0e0;
+            --text-color-primary: #333;
+            --text-color-secondary: #666;
+            --white: #ffffff;
+            --toggle-inactive: #ccc;
+            --toggle-active: #4CAF50;
+        }
+
+        /* General Body and Font Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--light-gray-bg);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text-color-primary);
+        }
+
+        /* Header Styles */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--navy-blue);
+            color: var(--white);
+            padding: 10px 25px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left img {
+            height: 40px;
+        }
+
+        .header-left h1 {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-right .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--white);
+            border-radius: 50%;
+        }
+
+        /* Title Bar */
+        .title-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: var(--white);
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .title-bar-text h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .title-bar-text p {
+            font-size: 0.9rem;
+            color: var(--text-color-secondary);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            padding: 25px;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        /* Watermark */
+        .main-content::before {
+            content: 'NIGERIAN NAVY'; /* Placeholder text for the logo */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            font-weight: bold;
+            color: #e0e0e0;
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+
+        /* Settings Card */
+        .settings-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .card-header svg {
+            width: 20px; /* Control icon size */
+            height: 20px;
+        }
+
+        .card-header-text h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--navy-blue);
+        }
+
+        .card-header-text p {
+            font-size: 0.85rem;
+            color: var(--text-color-secondary);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .setting-item-text h4 {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .setting-item-text p {
+            font-size: 0.85rem;
+            color: var(--text-color-secondary);
+        }
+
+        /* Pure CSS Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--toggle-inactive);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--navy-blue);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Custom Scrollbar */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: var(--light-gray-bg);
+            border-radius: 10px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 10px;
+            border: 3px solid var(--light-gray-bg);
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #e9ecef;
+            color: var(--text-color-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .header-left h1 {
+                font-size: 0.9rem;
+            }
+            .main-content {
+                padding: 15px;
+            }
+            .settings-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="header-left">
+            <img src="https://via.placeholder.com/40x40.png?text=NN" alt="Nigerian Navy Logo">
+            <h1>NIGERIAN NAVY PERSONNEL INFORMATION</h1>
+        </div>
+        <div class="header-right">
+            <span>ADMIN (NAVSEC)</span>
+            <div class="user-avatar"></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="title-bar">
+            <span>&#9776;</span>
+            <div class="title-bar-text">
+                <h2>Admin Settings</h2>
+                <p>Configure System Settings and Platforms Preference</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="settings-card">
+                <div class="card-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#101C46">
+                        <title>Square Shield Icon</title>
+                        <path d="M4,2 L16,2 L18,7 C18,12 14,18 10,18 S2,12 2,7 Z" />
+                    </svg>
+                    <div class="card-header-text">
+                        <h3>Security Settings</h3>
+                        <p>manage authentication and security preference</p>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-item-text">
+                        <h4>Two - Factor Authentication</h4>
+                        <p>Require 2FA for all admin accounts</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-text">
+                        <h4>Maintenance Mode</h4>
+                        <p>Temporarily disable users</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="card-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#101C46">
+                      <title>Bell Icon</title>
+                      <path d="M10 2c-3.314 0-6 2.686-6 6v5l-2 2v1h16v-1l-2-2v-5c0-3.314-2.686-6-6-6zm-2 16h4c0 1.1-.9 2-2 2s-2-.9-2-2z"/>
+                    </svg>
+                    <div class="card-header-text">
+                        <h3>Notification Settings</h3>
+                        <p>Configure how and when notifications are sent</p>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-text">
+                        <h4>Email Notification</h4>
+                        <p>Send email alert for account creation</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-text">
+                        <h4>Push Notification</h4>
+                        <p>Send push notification</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer">
+        Nigerian Navy. All rights reserved
+    </footer>
+
+</body>
+</html>
