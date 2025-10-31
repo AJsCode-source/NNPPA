@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Management - NAVPIMS</title>
+  <link href="css/style.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'tahoma', sans-serif;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #1e293b; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+    /* Ensure hidden works even without Tailwind */
+    .hidden { display: none !important; }
+
+    /* Layout helpers */
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-3 { gap: 0.75rem; }
+    .min-h-screen { min-height: 100vh; }
+    .p-4 { padding: 1rem; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Sidebar slide effect */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px; /* hidden offscreen */
+      width: 250px;
+      height: 100%;
+      background-color: #0f172a;
+      transition: left 0.28s ease;
+      z-index: 1000;
+      color: #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    #sidebar.active {
+      left: 0;
+    }
+
+    #sidebar a { color: inherit; text-decoration: none; }
+    
+    /* FIX: Sidebar help/logout hover color */
+    #sidebar div:last-of-type a:hover {
+        color: #ffffff;
+        background-color: #1e293b;
+    }
+
+    /* Overlay background */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.28s ease;
+      z-index: 900;
+    }
+    #overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Burger button (three lines -> X) */
+    #burgerMenu {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 36px;
+      height: 22px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 1100;
+      align-items: center;
+    }
+    #burgerMenu span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background: rgba(0,0,77,1);
+      border-radius: 2px;
+      transition: transform .28s ease, opacity .2s ease, background .2s ease;
+    }
+    #burgerMenu:hover span {
+      transform: scale(1.08);
+      background: #1e40af;
+    }
+    /* Animate into X */
+    #burgerMenu.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+      background: white;
+    }
+    #burgerMenu.active span:nth-child(2) {
+      opacity: 0;
+    }
+    #burgerMenu.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+      background: white;
+    }
+
+    /* Header / top bar */
+    /* FIX: Header background color */
+    header.top-bar-header {
+      background-color: rgba(0, 0, 77, 1);
+    }
+    header .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0; /* Allow brand section to shrink */
+    }
+    header .brand img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    header .brand h2 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 1.05rem;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    /* Table header area */
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 1rem;
+      border-bottom: 1px solid rgba(99,102,241,0.06); /* subtle */
+    }
+
+    .left-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .menu-title {
+      color: rgba(0,0,77,1);
+      font-size: 1.05rem;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Right controls: search + filter */
+    .right-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    /* Search */
+    .search-wrapper {
+      position: relative;
+      min-width: 160px;
+      max-width: 420px;
+      width: 240px;
+      flex-shrink: 1;
+      margin: 0;
+    }
+    .search-wrapper input {
+      width: 100%;
+      box-sizing: border-box;
+      padding-left: 2.4rem;
+      padding-right: 1rem;
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid rgba(148,163,184,0.08);
+      background: #07203b20;
+      color: #00124d;
+      font-size: 0.95rem;
+    }
+    .search-wrapper svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); }
+
+    /* Filter */
+    .filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(148,163,184,0.08);
+      background: transparent;
+      cursor: pointer;
+      height: 38px;
+      flex-shrink: 0;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .filter-btn svg { flex-shrink: 0; }
+    .filter-text { white-space: nowrap; }
+
+    /* FIX: Filter button hover color */
+    .filter-btn:hover {
+        background-color: rgba(0, 0, 77, 1);
+        color: #ffffff;
+        border-color: rgba(0, 0, 77, 1);
+    }
+
+    /* Footer */
+    footer {
+      background-color: #0f172a;
+      color: #94a3b8;
+      text-align: center;
+      padding: 12px;
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+
+    /* Small style for action dropdowns inside table */
+    .action-dropdown {
+      position: absolute;
+      right: 0;
+      margin-top: 8px;
+      min-width: 160px;
+      background: #e6eef6;
+      border-radius: 6px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      z-index: 1200;
+      overflow: hidden;
+    }
+    .action-dropdown a {
+      display:block;
+      padding: 10px 12px;
+      color: #0b1220;
+      text-decoration: none;
+    }
+    .action-dropdown a:hover {
+      background-color: rgba(0,0,77,1);
+      color: #fff;
+    }
+
+    /* Make sure dropdowns inside table are positioned relative to cell */
+    td .relative { position: relative; }
+
+    /* Responsive: allow table scrolling */
+    .overflow-x-auto { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    /* ---------------- */
+    /* RESPONSIVE FIXES */
+    /* ---------------- */
+    @media (max-width: 1024px) {
+      .search-wrapper { width: 200px; min-width: 120px; }
+      header .brand h2 { font-size: 0.98rem; }
+    }
+
+    @media (max-width: 768px) {
+      .menu-title { font-size: 1rem; }
+      /* On small screens hide the Filter text and keep only icon */
+      .filter-text { display: none; }
+      .filter-btn { padding: 8px; width: 40px; justify-content: center; }
+      /* tighten search so it won't force horizontal scroll */
+      .search-wrapper { width: 140px; }
+      .search-wrapper input { height: 36px; font-size: 0.9rem; }
+      /* reduce avatar size */
+      .w-10.h-10 { width: 36px; height: 36px; }
+      /* ensure header content wraps nicely */
+      .table-header { gap: 10px; padding: 0.75rem; }
+    }
+
+    @media (max-width: 480px) {
+      .search-wrapper { width: 110px; }
+      .menu-title { font-size: 0.95rem; }
+      .search-wrapper input { font-size: 0.85rem; }
+      .filter-btn { width: 40px; padding: 6px; }
+      header .brand img { width: 36px; height: 36px; }
+      header .brand h2 { font-size: 0.95rem; }
+    }
+
+    /* ensure table content is fluid */
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th, td { padding: 0.75rem 0.75rem; text-align: left; }
+    thead th { font-weight: 600; font-size: 0.78rem; color: #cbd5e1; }
+
+  </style>
+</head>
+
+<body class="bg-navy-deep text-gray-300 flex flex-col min-h-screen">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-64 bg-navy-dark flex-shrink-0 flex flex-col min-h-screen justify-between p-4">
+    <div>
+      <div class="flex items-center mb-10">
+        <img src="images/Navy-logo.png" alt="Nigerian Navy Logo" style="height: fit-content;" class="h-10 w-10 mr-3"
+          onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/000033?text=NN';">
+      </div>
+      <nav class="flex flex-col gap-2">
+        <a href="#" class="flex items-center bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold">
+          <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.97 5.97 0 0112 13a5.97 5.97 0 013 5.197M15 21a6 6 0 00-9-5.197"></path>
+          </svg>
+          User Management
+        </a>
+        <a href="admin.html"
+          class="flex items-center hover:bg-navy-light text-gray-300 py-3 px-4 rounded-lg transition-colors">
+          <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          Admin Settings
+        </a>
+        <a href="Admin profile.html"
+          class="flex items-center hover:bg-navy-light text-gray-300 py-3 px-4 rounded-lg transition-colors">
+          <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+          Admin Profile
+        </a>
+      </nav>
+    </div>
+    <div>
+      <a href="#" class="flex items-center text-gray-400 py-2 px-4 rounded-lg">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        Help
+      </a>
+      <a href="index.html" class="flex items-center text-gray-400 py-2 px-4 rounded-lg">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+        Log out
+      </a>
+    </div>
+  </aside>
+
+  <!-- Overlay -->
+  <div id="overlay"></div>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col">
+
+    <!-- Top Bar -->
+    <header class="top-bar-header p-4 flex justify-between items-center flex-shrink-0">
+      <div class="brand">
+        <img src="images/Navy-logo.png" alt="Nigerian Navy Logo" class="h-10 w-10"
+          onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/000033?text=NN';">
+        <h2 class="text-lg font-semibold text-white truncate" style="margin-left: 8px;">NIGERIAN NAVY PERSONNEL INFORMATION</h2>
+      </div>
+
+      <div class="flex items-center" style="gap:12px; flex-shrink: 0;">
+        <span class="mr-4 text-sm">ADMIN (NAVSEC)</span>
+        <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center font-bold text-white">V</div>
+      </div>
+    </header>
+
+    <!-- Table Area -->
+    <main class="flex-1 p-6 overflow-y-auto">
+      <div class="bg-navy-filter rounded-xl shadow-lg">
+
+        <!-- Table Header -->
+        <div class="table-header">
+
+          <div class="left-controls">
+            <!-- Burger Menu -->
+            <button id="burgerMenu" aria-label="Toggle menu" aria-expanded="false" title="Open menu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+
+            <!-- Menu Title -->
+            <span class="menu-title">User Management</span>
+          </div>
+
+          <!-- Right side (search + filter) -->
+          <div class="right-controls">
+            <!-- Search -->
+            <div class="relative search-wrapper" style="min-width:110px;">
+              <input type="text" placeholder="Search"
+                class="bg-navy-deep text-navy rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <svg class="w-5 h-5 text-gray-500" style="position:absolute; left:10px; top:50%; transform:translateY(-50%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+
+            <!-- Filter Button -->
+            <button class="filter-btn" aria-label="Filter">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="min-width:18px;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+              </svg>
+              <span class="filter-text">Filter</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="text-xs text-gray-400 uppercase bg-navy-deep" style="background-color: rgba(0, 0, 77, 1);">
+              <tr>
+                <th scope="col" class="px-6 py-3">Name</th>
+                <th scope="col" class="px-6 py-3">Rank</th>
+                <th scope="col" class="px-6 py-3">E-mail</th>
+                <th scope="col" class="px-6 py-3">Current Unit</th>
+                <th scope="col" class="px-6 py-3">Dept</th>
+                <th scope="col" class="px-6 py-3">Commissioning</th>
+                <th scope="col" class="px-6 py-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody style="background-color: rgb(232, 232, 220);">
+              <!-- Sample Row 1 -->
+              <tr class="border-b border-navy-light text-white-2">
+                <td class="px-6 py-4 font-medium text-white-2 whitespace-nowrap flex items-center" style="color: rgba(0, 0, 77, 1);">
+                  <img class="w-8 h-8 rounded-full mr-3" src="https://placehold.co/32x32/4a5568/ffffff?text=O" alt="O Fatade">
+                  O FATADE
+                </td>
+                <td class="px-6 py-4">R ADM</td>
+                <td class="px-6 py-4">fatadesolufemi@gmail.com</td>
+                <td class="px-6 py-4">NHQ</td>
+                <td class="px-6 py-4">CIT</td>
+                <td class="px-6 py-4">RC</td>
+                <td class="px-6 py-4 text-center">
+                  <div class="relative">
+                    <button class="action-button p-2 rounded-full hover:bg-navy-light" data-target="dropdown-1" aria-haspopup="true" aria-expanded="false">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                    </button>
+                    <!-- Dropdown menu -->
+                    <div id="dropdown-1" class="hidden action-dropdown" role="menu" aria-label="Row actions">
+                      <a href="#" role="menuitem">View Profile</a>
+                      <a href="#" role="menuitem">Edit Profile</a>
+                      <a href="#" role="menuitem">Download Data</a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Sample Row 2 -->
+              <tr class="border-b border-navy-light text-white-2">
+                <td class="px-6 py-4 font-medium whitespace-nowrap flex items-center">
+                  <img class="w-8 h-8 rounded-full mr-3" src="https://placehold.co/32x32/4a5568/ffffff?text=M" alt="M Eife">
+                  MA EIFE
+                </td>
+                <td class="px-6 py-4">R ADM</td>
+                <td class="px-6 py-4">fatadesolufemi@gmail.com</td>
+                <td class="px-6 py-4">NHQ</td>
+                <td class="px-6 py-4">NASS</td>
+                <td class="px-6 py-4">RC</td>
+                <td class="px-6 py-4 text-center">
+                  <div class="relative">
+                    <button class="action-button p-2 rounded-full hover:bg-navy-light" data-target="dropdown-2" aria-haspopup="true" aria-expanded="false">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                    </button>
+                    <div id="dropdown-2" class="hidden action-dropdown" role="menu" aria-label="Row actions">
+                      <a href="#" role="menuitem">View Profile</a>
+                      <a href="#" role="menuitem">Edit Profile</a>
+                      <a href="#" role="menuitem">Download Data</a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- More rows as needed -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer -->
+        <div class="p-4 flex justify-between items-center text-sm">
+          <span>Showing 1 to 10 of 20 entries</span>
+          <div class="flex items-center">
+            <a href="#" class="px-3 py-1 border border-navy-light rounded-l-lg hover:bg-navy-light">Previous</a>
+            <a href="#" class="px-3 py-1 border-t border-b border-navy-light bg-blue-600 text-white">1</a>
+            <a href="#" class="px-3 py-1 border-t border-b border-navy-light hover:bg-navy-light">2</a>
+            <a href="#" class="px-3 py-1 border border-navy-light rounded-r-lg hover:bg-navy-light">Next</a>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+     <footer class="bg-gray-300 text-gray-800 p-4 w-full">
+        <div class="container mx-auto text-center text-xs">
+            <p>&copy; 2025 Nigerian Navy. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // Wait until DOM is ready
+    (function () {
+      // Sidebar + overlay behavior
+      const burger = document.getElementById("burgerMenu");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+
+      burger.addEventListener("click", (e) => {
+        burger.classList.toggle("active");
+        sidebar.classList.toggle("active");
+        overlay.classList.toggle("active");
+        const expanded = burger.classList.contains('active');
+        burger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      });
+
+      overlay.addEventListener("click", () => {
+        burger.classList.remove("active");
+        sidebar.classList.remove("active");
+        overlay.classList.remove("active");
+        burger.setAttribute('aria-expanded', 'false');
+      });
+
+      /********************
+       * DROPDOWN HANDLING
+       ********************/
+
+      function closeAllRowDropdowns() {
+        document.querySelectorAll('[id^="dropdown-"]').forEach(dd => {
+          dd.classList.add('hidden');
+          dd.dataset.open = 'false';
+        });
+        document.querySelectorAll('button[data-target]').forEach(btn => btn.setAttribute('aria-expanded','false'));
+      }
+
+      function toggleRowDropdown(id, toggleButton) {
+        const panel = document.getElementById(id);
+        if (!panel) return;
+        const isHidden = panel.classList.contains('hidden');
+        closeAllRowDropdowns();
+        if (isHidden) {
+          panel.classList.remove('hidden');
+          panel.dataset.open = 'true';
+          if (toggleButton) toggleButton.setAttribute('aria-expanded','true');
+        } else {
+          panel.classList.add('hidden');
+          panel.dataset.open = 'false';
+          if (toggleButton) toggleButton.setAttribute('aria-expanded','false');
+        }
+      }
+
+      // attach click handlers to all buttons that have data-target
+      document.querySelectorAll('button[data-target]').forEach(btn => {
+        btn.addEventListener('click', (ev) => {
+          ev.stopPropagation(); // prevent document click from immediately closing
+          const targetId = btn.getAttribute('data-target');
+          toggleRowDropdown(targetId, btn);
+        });
+      });
+
+      // close dropdowns when clicking anywhere else
+      document.addEventListener('click', (ev) => {
+        const openPanel = Array.from(document.querySelectorAll('[id^="dropdown-"]')).find(p => !p.classList.contains('hidden'));
+        if (!openPanel) return;
+        if (openPanel.contains(ev.target)) return;
+        const toggles = document.querySelectorAll('button[data-target]');
+        for (const t of toggles) {
+          const id = t.getAttribute('data-target');
+          if (id && document.getElementById(id) === openPanel && t.contains(ev.target)) return;
+        }
+        closeAllRowDropdowns();
+      });
+
+      // close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeAllRowDropdowns();
+          burger.classList.remove("active");
+          sidebar.classList.remove("active");
+          overlay.classList.remove("active");
+          burger.setAttribute('aria-expanded','false');
+        }
+      });
+
+      // Prevent clicks inside dropdown from closing it via document click (defensive)
+      document.querySelectorAll('[id^="dropdown-"]').forEach(panel => {
+        panel.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
+

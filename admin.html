@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - NAVPIMS</title>
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'tahoma', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .main-content {
+    position: relative;  /* make sure child ::before positions correctly */
+    z-index: 0;
+}
+
+.main-content::before {
+    content: "";
+    position: absolute;
+    inset: 0; /* covers the full area */
+    background: url(images/Navy-logo.png) no-repeat center;
+    background-size: 400px auto; /* adjust size of watermark */
+    opacity: 0.08; /* faint watermark effect */
+    pointer-events: none; /* doesn’t block clicks */
+    z-index: -1; /* behind the content */
+}
+
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-navy text-white p-3 shadow-md w-full">
+        <div class="container mx-auto flex justify-between items-center" style="margin-left: 0%;">
+            <div class="flex items-center">
+                <img src="images/Navy-logo.png" alt="Nigerian Navy Logo" style="height: fit-content;" class="h-10 w-10 mr-4" onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/000033?text=NN';">
+                <h1 class="text-xl font-semibold tracking-wider" style="color: rgba(255, 255, 255, 1);">NIGERIAN NAVY PERSONNEL PHOTO ALBUM</h1>
+            </div>
+            <!-- Future user profile dropdown can go here -->
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto p-6 md:p-8 main-content bg-white/50">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-extrabold text-navy">Admin Dashboard</h2>
+            <p class="text-lg text-gray-600 mt-2">Comprehensive user management and administrative control centre</p>
+        </div>
+
+        <!-- Cards Section -->
+        <div class="grid md:grid-cols-3 gap-8" style="color: rgba(255, 255, 255, 1);">
+            <!-- User Management Card -->
+            <div class="bg-card-bg border border-gray-200 rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform transform hover:-translate-y-2">
+                <div class="bg-navy text-white rounded-full p-4 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.97 5.97 0 0112 13a5.97 5.97 0 013 5.197M15 21a6 6 0 00-9-5.197"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-navy mb-2">User Management</h3>
+                <p class="text-gray-600 mb-6 flex-grow">Manage users, edit profiles, and download user data with comprehensive controls</p>
+                <a href="User management.html" class="w-full bg-navy text-white font-semibold py-2 px-4 rounded-lg hover:bg-navy-dark transition-colors flex items-center justify-center">
+                    Access user
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+
+            <!-- Admin Settings Card -->
+            <div class="bg-card-bg border-2 border-navy rounded-xl shadow-xl p-6 flex flex-col items-center text-center transition-transform transform hover:-translate-y-2">
+                 <div class="bg-navy text-white rounded-full p-4 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-navy mb-2">Admin Settings</h3>
+                <p class="text-gray-600 mb-6 flex-grow">Configure system settings, security options, and platform preferences</p>
+                <a href="#" class="w-full bg-navy text-white font-semibold py-2 px-4 rounded-lg hover:bg-navy-dark transition-colors flex items-center justify-center">
+                    Open Settings
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+
+            <!-- Admin Profile Card -->
+            <div class="bg-card-bg border border-gray-200 rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform transform hover:-translate-y-2">
+                 <div class="bg-navy text-white rounded-full p-4 mb-4">
+                   <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-navy mb-2">Admin Profile</h3>
+                <p class="text-gray-600 mb-6 flex-grow">Manage your administrator profile, personal settings, and account information</p>
+                <a href="Admin profile.html" class="w-full bg-navy text-white font-semibold py-2 px-4 rounded-lg hover:bg-navy-dark transition-colors flex items-center justify-center">
+                    View Profile
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-300 text-gray-800 p-4 w-full" >
+        <div class="container mx-auto text-center text-xs">
+            <p>Nigerian Navy. All rights reserved</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+
