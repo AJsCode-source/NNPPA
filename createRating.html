@@ -1,0 +1,380 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* This is a single-file HTML document. All necessary CSS is included here.
+        No JavaScript is required for this page's layout or functionality.
+      */
+      body {
+        font-family: 'Poppins', Arial, sans-serif;
+        background-color: #f8f8ec;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* HEADER STYLES */
+      .header {
+        background-color: #0b1651;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 40px;
+        flex-shrink: 0;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+      }
+
+      .header-left img {
+        height: 45px;
+        margin-right: 12px;
+      }
+
+      .header-left span {
+        font-weight: bold;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .profile-dot {
+        width: 22px;
+        height: 22px;
+        background-color: #d9d9d9;
+        border-radius: 50%;
+      }
+
+      /* MAIN CONTENT WRAPPER */
+      .content-wrapper {
+          flex-grow: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 40px 20px;
+      }
+
+      /* FORM CONTAINER STYLES */
+      .form-container {
+        background-color: #d9d9d9;
+        width: 100%;
+        max-width: 1100px;
+        padding: 45px 50px;
+        border-radius: 10px;
+        border: 2px solid #ccc;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      }
+      
+      /* WATERMARK IMPLEMENTATION */
+      .main-content {
+        position: relative; 
+        z-index: 0;
+      }
+
+      .main-content::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Badge_of_the_Nigerian_Navy.svg/800px-Badge_of_the_Nigerian_Navy.svg.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 400px auto;
+        opacity: 0.08;
+        pointer-events: none;
+      }
+
+      /* This wrapper lifts the form content above the watermark */
+      .form-inner-content {
+          position: relative;
+          z-index: 1;
+      }
+
+      /* TITLE WITH HR STYLES */
+      .title-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .title-section hr {
+        flex: 1;
+        border: none;
+        border-top: 5px solid #888282;
+      }
+
+      .title-section h1 {
+        font-size: 40px;
+        color: #00004d;
+        font-weight: 700;
+        margin: 0;
+        white-space: nowrap;
+      }
+
+      /* FORM GRID STYLES */
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px 40px;
+      }
+
+      /* UPDATED: Styles for both input and select fields */
+      input, select {
+        width: 100%;
+        height: 45px;
+        border: 3px solid #9a9a9a;
+        border-radius: 25px;
+        padding: 0 20px;
+        background-color: #d9d9d9;
+        font-size: 14px;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        outline: none;
+        box-sizing: border-box; /* Ensures padding doesn't affect width */
+        -webkit-appearance: none; /* Removes default styling on Safari/Chrome */
+        -moz-appearance: none; /* Removes default styling on Firefox */
+        appearance: none; /* Removes default styling on modern browsers */
+      }
+
+      select {
+        background-image: url('data:image/svg+xml;utf8,<svg fill="%2300004d" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 20px center;
+      }
+
+      input:focus, select:focus {
+        border-color: #0b1651;
+      }
+
+      /* Wide Field Style */
+      .form-group.wide {
+        grid-column: span 2;
+      }
+
+      /* PLACEHOLDER STYLES */
+      ::placeholder {
+        color: #00004d;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      /* Styles for select placeholder */
+      select:invalid {
+        color: #00004d;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      select option {
+        color: #333; /* Color for options in the dropdown list */
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      /* BUTTON STYLES */
+      .button-container {
+        text-align: center;
+        margin-top: 45px;
+      }
+
+      button {
+        background-color: #d9d9d9;
+        border: 2px solid #888;
+        border-radius: 25px;
+        padding: 10px 40px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #00004d;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      button:hover {
+        background-color: #e1e1e1;
+      }
+
+      /* FOOTER STYLES */
+      .footer {
+        text-align: center;
+        font-size: 12px;
+        color: #000;
+        background-color: #d9d9d9;
+        padding: 12px 0;
+        flex-shrink: 0;
+      }
+      
+      /* RESPONSIVE DESIGN */
+      @media (max-width: 992px) {
+          .form-grid {
+              grid-template-columns: repeat(2, 1fr);
+          }
+          .form-group.wide {
+              grid-column: span 2;
+          }
+          .title-section h1 {
+              font-size: 32px;
+          }
+      }
+      @media (max-width: 768px) {
+          .header {
+              flex-direction: column;
+              gap: 10px;
+              padding: 15px;
+          }
+          .form-container {
+              padding: 30px 25px;
+          }
+          .form-grid {
+              grid-template-columns: 1fr;
+          }
+          .form-group.wide {
+              grid-column: span 1;
+          }
+          .title-section h1 {
+              font-size: 24px;
+          }
+          .main-content::before {
+              background-size: 300px auto;
+          }
+      }
+    </style>
+  </head>
+  <body>
+
+    <header class="header">
+      <div class="header-left">
+        <!-- Using a public placeholder URL to ensure the logo is visible -->
+        <img src="images/800px-Badge_of_the_Nigerian_Navy.svg.png" alt="Navy Logo">
+        <span>NIGERIAN NAVY PERSONNEL PHOTO ALBUM</span>
+      </div>
+      <div class="header-right">
+        <span>LT CDR JT ANDREW</span>
+        <div class="profile-dot"></div>
+      </div>
+    </header>
+
+    <div class="content-wrapper">
+      <div class="form-container main-content">
+        <div class="form-inner-content">
+          <div class="title-section">
+            <hr>
+            <h1>CREATE NEW PROFILE</h1>
+            <hr>
+          </div>
+
+          <form action="#" method="post">
+            <div class="form-grid">
+              <div class="form-group">
+                <input type="text" placeholder="FIRST NAME">
+              </div>
+              <div class="form-group">
+                <input type="text" placeholder="MIDDLE NAME">
+              </div>
+              <div class="form-group">
+                <input type="text" placeholder="SURNAME">
+              </div>
+
+              <div class="form-group">
+                <input type="text" placeholder="SVC NAME">
+              </div>
+              <div class="form-group">
+                <input type="text" placeholder="SVC NO">
+              </div>
+              <div class="form-group">
+                <input type="text" placeholder="RATE/RANK">
+              </div>
+
+              <div class="form-group">
+                <input type="text" placeholder="DATE OF BIRTH" onfocus="(this.type='date')" onblur="(this.type='text')">
+              </div>
+              <div class="form-group">
+                <select required>
+                  <option value="" disabled selected>BLOOD GROUP</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <select required>
+                  <option value="" disabled selected>MARITAL STATUS</option>
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                
+                <select required>
+                  <option value="" disabled selected>GENDER</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <input type="email" placeholder="EMAIL">
+              </div>
+              <div class="form-group">
+                <input type="tel" placeholder="PHONE">
+              </div>
+
+              <div class="form-group">
+                <input type="text" placeholder="CURRENT SHIP">
+              </div>
+              <div class="form-group">
+                <input type="text" placeholder="SPECIALIZATION">
+              </div>
+              <div class="form-group">
+                <input type="text" placeholder="BRANCH">
+              </div>
+
+              <div class="form-group wide">
+                <input type="text" placeholder="YR OF COMMISSIONING/ENLISTMENT">
+              </div>
+              <div class="form-group">
+                <input type="text" placeholder="COURSE">
+              </div>
+            </div>
+
+            <div class="button-container">
+              <button type="submit">NEXT</button>
+            </div>
+          </form> 
+          <div class="title-section" style="margin-top: 40px; margin-bottom: -20px;"><hr></div>
+        </div> <!-- END OF NEW WRAPPER -->
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>&copy; Nigerian Navy. All rights reserved</p>
+    </footer>
+
+  </body>
+  </html>
+

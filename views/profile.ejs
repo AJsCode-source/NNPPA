@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Profile Preview</title>
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    /* This hides the ugly default file input */
+    #profile-photo-input {
+        display: none;
+    }
+    /* This makes your image look clickable */
+    .photo-upload-label {
+        cursor: pointer;
+        display: inline-block;
+    }
+    /* Simple style for the save button */
+     /* .btn-save{
+    display:inline-block;
+    background:linear-gradient(#fff,#e9e9ea);
+    border-radius:28px;
+    padding:12px 24px;
+    border:4px solid rgba(80,80,80,0.07);
+    box-shadow:0 6px 0 rgba(0,0,0,0.08), 0 3px 8px rgba(0,0,0,0.06) inset;
+    font-weight:800;
+    letter-spacing:1px;
+    color:var(--accent);
+    text-decoration:none;
+  } */
+    .btn-save a {
+      color: white;
+      text-decoration: none;
+    }
+
+    button, input {
+        background-color: #d9d9d9;
+        border: 3px solid #888;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #00004d;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      button:hover {
+        background-color: #fff;
+      }
+</style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="brand">
+      <img src="/800px-Badge_of_the_Nigerian_Navy.svg.png" alt="" srcset="" height="50px">
+      <span>NIGERIAN NAVY PERSONNEL INFORMATION</span>
+    </div>
+    <div class="user-badge">
+      <div><%= user.svcName %>, <%= user.svcNo %></div>
+      <div class="avatar"></div>
+    </div>
+  </div>
+
+  <main class="page">
+    <section class="card">
+      <div class="title-section">
+
+      </div>
+      <h1 class="heading">PROFILE PREVIEW</h1>
+      <div class="hr"></div>
+
+      <div class="content">
+        <form id="upload-form" action="/upload-photo" method="POST" enctype="multipart/form-data">
+          <div class="photo-box">
+
+            <input type="hidden" name="svcNo" value="<%= user.svcNo %>">
+
+            <label for="profile-photo-input" class="photo-upload-label">
+              <img id="profile-image-preview" src="<%= user.photoPath ? '/' + user.photoPath.replace(/\\/g, '/') : '/image 1.jpg' %>"
+                alt="Profile Photo">
+            </label>
+
+            <input type="file" id="profile-photo-input" name="profilePhoto" accept="image/*">
+
+            <!-- <div class="edit-icon">
+              <img src="/Pencil.png" alt="Edit Photo" srcset="">
+            </div> -->
+            
+            <button type="submit" id="save-photo-btn" class="btn-save" style="display: none; margin-top: 10px;">
+              Save Photo
+            </button>
+          </div>
+        </form>
+
+        <div class="info-grid">
+          <div class="info-item">
+              <span class="label">NAME</span>
+              <span class="value">
+                <%= user.firstName %>
+                  <%= user.middleName %>
+                    <%= user.surname %>
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">SVC NAME</span>
+              <span class="value">
+                <%= user.svcName %>
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">SVC NO</span>
+              <span class="value">
+                <%= user.svcNo %>
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">RATE</span>
+              <span class="value">
+                <%= user.rateRank %>
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">GENDER</span>
+              <span class="value">
+                <%= user.gender %>
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">YR OF COMMISSION</span>
+              <span class="value">
+                <%= user.yrCommissioning %>
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">COURSE</span>
+              <span class="value">
+                <%= user.course %>
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">DOB</span>
+              <span class="value">
+                <%= user.dob %>
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">SPECIALIZATION</span>
+              <span class="value">
+                <%= user.specialization %>
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">CURRENT SHIP</span>
+              <span class="value">
+                <%= user.currentShip %>
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">PHONE</span>
+              <span class="value">
+                <%= user.phone %>
+              </span>
+            </div>
+
+             <div class="info-item">
+              <span class="label">BLOOD GROUP</span>
+              <span class="value">
+                <%= user.bloodGroup %>
+              </span>
+            </div>
+            
+
+            <div class="info-item">
+              <span class="label">MARITAL STATUS</span>
+              <span class="value">
+                <%= user.maritalStatus %>
+              </span>
+            </div>
+
+           <div class="info-item">
+              <span class="label">EMAIL</span>
+              <span class="value">
+                <%= user.email %>
+              </span>
+            </div>
+
+        </div>
+
+        
+      </div>
+
+      <div class="actions">
+        <button type="submit">SAVE & EXIT</a></button>
+      </div>
+
+      <div class="bottom-line"></div>
+    </section>
+
+    <div class="footer">
+      Nigerian Navy. All rights reserved
+    </div>
+  </main>
+
+  <script>
+    const fileInput = document.getElementById('profile-photo-input');
+    const imgPreview = document.getElementById('profile-image-preview');
+    const saveButton = document.getElementById('save-photo-btn');
+
+    fileInput.onchange = function(event) {
+      // Get the file the user selected
+      const file = event.target.files[0];
+      
+      if (file) {
+        // 1. Create a temporary local URL for the selected image
+        const localImageUrl = URL.createObjectURL(file);
+        
+        // 2. Set the 'src' of your image to this new local URL
+        //    This makes the new picture appear instantly!
+        imgPreview.src = localImageUrl;
+        
+        // 3. Show the "Save Photo" button
+        saveButton.style.display = 'inline-block';
+      }
+    };
+  </script>
+</body>
+</html>

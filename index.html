@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAVPIMS - Nigerian Navy Login</title>
+    <!-- Link to our local, offline CSS file -->
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        /* Custom font for a more official feel */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'tahoma', sans-serif;
+        }
+    </style>
+</head>
+<!-- This body structure ensures the footer stays at the bottom -->
+<body class="flex flex-col min-h-screen bg-gray-200">
+
+    <!-- Header -->
+    <header class="bg-blue-900 text-white p-4 w-full shadow-md" >
+        <div class="container mx-auto flex justify-between items-center" style="margin-left: 0%;">
+            <div class="flex items-center" style="margin-left: 0%;">
+                <img src="images/Navy-logo.png" alt="Nigerian Navy Logo" style="height: fit-content;" class="h-10 w-10 mr-3" onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/000033?text=NN';">
+                <h1 class="text-xl font-bold">Nigerian Navy Personnel Photo Album</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="bg-blue-900 text-white border border-gray-700 rounded-2xl shadow-2xl p-8 md:p-12 w-full max-w-md mx-4">
+            
+            <div class="text-center mb-8">
+                <img src="images/Navy-logo.png" alt="Nigerian Navy Logo" style="height: 20%;"  class="w-20 h-20 mx-auto mb-4" onerror="this.onerror=null; this.src='https://placehold.co/80x80/ffffff/000033?text=NN';">
+                <h1 class="text-3xl font-bold text-yellow-400">NNPPA</h1>
+                <p class="text-gray-200 mt-2">Nigerian Navy Personnel Photo Album</p>
+                <p class="text-yellow-500">Onward Together</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="mb-5">
+                    <label for="serviceNumber" class="block mb-2 text-sm font-medium text-gray-300">Service Number</label>
+                    <input type="text" id="serviceNumber" name="serviceNumber" class="bg-gray-200 text-gray-900 border border-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="e.g., NN/1234" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block mb-2 text-sm font-medium text-gray-300">Password</label>
+                    <input type="password" id="password" class="bg-gray-200 text-gray-900 border border-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="•••••••••" required>
+                </div>
+                
+                <button type="submit" class="w-full text-gray-900 bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-bold rounded-lg text-md px-5 py-3 text-center transition duration-300 ease-in-out">
+                  Create Password
+                </button>
+            </form>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-300 text-gray-800 p-4 w-full">
+        <div class="container mx-auto text-center text-xs">
+            <p>&copy; 2025 Nigerian Navy. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>
+
